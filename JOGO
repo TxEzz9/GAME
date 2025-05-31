@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TESTE DE AMOR ZOEIRÃO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffcc, #ffcc00);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        
+        .pixel-border {
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .pixel-button {
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .pixel-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .pixel-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickSound">
+        <source src="https://www.sounds-resource.com/download/bns/10692/" type="audio/mpeg">
+    </audio>
+    <audio id="resultSound">
+        <source src="https://www.myinstants.com/media/sounds/smb_stage_clear.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="startScreen" class="text-center">
+        <h1 class="text-4xl md:text-6xl mb-8 text-white text-shadow-lg shadow-black">GAME MADE BY TETEU!</h1>
+        <button id="playButton" class="pixel-button bg-pink-500 text-white text-2xl md:text-4xl px-8 py-4 rounded-none pixel-border hover:bg-pink-600 active:bg-pink-700">
+            BORA!!!
+        </button>
+        <p class="mt-8 text-white text-shadow-md shadow-black">Clique para começar a zoeira!</p>
+    </div>
+    
+    <div id="testScreen" class="text-center hidden w-full max-w-md">
+        <h2 class="text-2xl md:text-3xl mb-8 text-white text-shadow-lg shadow-black">TESTE DE AMOR SUPER SÉRIO</h2>
+        
+        <div class="mb-6">
+            <label class="block text-white mb-2">Pessoa 1:</label>
+            <select id="person1" class="pixel-border w-full p-3 bg-white text-black">
+                <option value="Mateus">Mateus</option>
+                <option value="Carlos">Carlos</option>
+                <option value="João">João</option>
+            </select>
+        </div>
+        
+        <div class="mb-8">
+            <label class="block text-white mb-2">Pessoa 2:</label>
+            <select id="person2" class="pixel-border w-full p-3 bg-white text-black">
+                <option value="Carlos">Carlos</option>
+                <option value="João">João</option>
+                <option value="Mateus">Mateus</option>
+            </select>
+        </div>
+        
+        <button id="testButton" class="pixel-button bg-red-500 text-white text-xl md:text-2xl px-6 py-3 rounded-none pixel-border hover:bg-red-600 active:bg-red-700 mb-4">
+            Testar Amor 💘
+        </button>
+        
+        <p class="text-white text-sm">*Resultados 100% científicos e confiáveis</p>
+    </div>
+    
+    <div id="loadingScreen" class="text-center hidden">
+        <div class="text-white text-2xl md:text-4xl mb-8 loading-dots">Calculando amor</div>
+        <div class="grid grid-cols-5 gap-4">
+            <div class="w-8 h-8 bg-yellow-300 animate-pulse" style="animation-delay: 0.1s"></div>
+            <div class="w-8 h-8 bg-pink-300 animate-pulse" style="animation-delay: 0.2s"></div>
+            <div class="w-8 h-8 bg-purple-300 animate-pulse" style="animation-delay: 0.3s"></div>
+            <div class="w-8 h-8 bg-blue-300 animate-pulse" style="animation-delay: 0.4s"></div>
+            <div class="w-8 h-8 bg-green-300 animate-pulse" style="animation-delay: 0.5s"></div>
+        </div>
+    </div>
+    
+    <div id="resultScreen" class="text-center hidden">
+        <h2 id="resultText" class="text-4xl md:text-6xl mb-8 text-white text-shadow-lg shadow-black pulse"></h2>
+        <button id="restartButton" class="pixel-button bg-green-500 text-white text-xl md:text-2xl px-6 py-3 rounded-none pixel-border hover:bg-green-600 active:bg-green-700">
+            Testar de Novo 🔄
+        </button>
+    </div>
+
+    <script>
+        // Elementos
+        const startScreen = document.getElementById('startScreen');
+        const testScreen = document.getElementById('testScreen');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const playButton = document.getElementById('playButton');
+        const testButton = document.getElementById('testButton');
+        const restartButton = document.getElementById('restartButton');
+        const person1Select = document.getElementById('person1');
+        const person2Select = document.getElementById('person2');
+        const resultText = document.getElementById('resultText');
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSound = document.getElementById('clickSound');
+        const resultSound = document.getElementById('resultSound');
+        
+        // Iniciar música de fundo
+        bgMusic.volume = 0.3;
+        
+        // Função para criar corações caindo
+        function createHearts() {
+            const hearts = ['❤️', '💖', '💕', '💘', '💓', '💗', '💞'];
+            const colors = ['text-red-500', 'text-pink-500', 'text-purple-500', 'text-yellow-500'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = `heart ${colors[Math.floor(Math.random() * colors.length)]} text-${Math.floor(Math.random() * 3) + 2}xl`;
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = '-50px';
+                heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                
+                document.body.appendChild(heart);
+                
+                // Remover coração após animação
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, 300);
+        }
+        
+        // Eventos
+        playButton.addEventListener('click', () => {
+            clickSound.play();
+            bgMusic.play();
+            startScreen.classList.add('hidden');
+            
+            // Animação de transição
+            setTimeout(() => {
+                testScreen.classList.remove('hidden');
+                testScreen.classList.add('shake');
+                setTimeout(() => {
+                    testScreen.classList.remove('shake');
+                }, 500);
+            }, 500);
+        });
+        
+        testButton.addEventListener('click', () => {
+            clickSound.play();
+            const person1 = person1Select.value;
+            const person2 = person2Select.value;
+            
+            if (person1 === person2) {
+                alert('Não pode testar amor com a mesma pessoa! Isso é narcisismo!');
+                return;
+            }
+            
+            testScreen.classList.add('hidden');
+            loadingScreen.classList.remove('hidden');
+            
+            // Simular cálculo demorado
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                resultScreen.classList.remove('hidden');
+                
+                // Gerar porcentagem aleatória
+                const lovePercent = Math.floor(Math.random() * 101);
+                resultText.textContent = `${person1} ❤️ ${person2} = ${lovePercent}%`;
+                
+                resultSound.play();
+                createHearts();
+                
+                // Efeito visual baseado na porcentagem
+                if (lovePercent < 30) {
+                    resultText.classList.add('text-red-500');
+                    resultText.textContent += ' 😭';
+                } else if (lovePercent < 70) {
+                    resultText.classList.add('text-yellow-500');
+                    resultText.textContent += ' 😐';
+                } else {
+                    resultText.classList.add('text-green-500');
+                    resultText.textContent += ' 😍';
+                }
+            }, 3000);
+        });
+        
+        restartButton.addEventListener('click', () => {
+            clickSound.play();
+            resultScreen.classList.add('hidden');
+            testScreen.classList.remove('hidden');
+            
+            // Reset selects
+            person1Select.selectedIndex = 0;
+            person2Select.selectedIndex = 1;
+        });
+        
+        // Efeito hover nos botões
+        const buttons = [playButton, testButton, restartButton];
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                clickSound.currentTime = 0;
+                clickSound.play();
+            });
+        });
+    </script>
+</body>
+</html>
